@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>RailWatch AI - Feedback</title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+
+      <div class="brand-icon">🚆</div>
+
+      <div>
+        <h2>RailWatch AI</h2>
+        <small>Smarter Journeys</small>
+      </div>
+
+    </div>
+
+
+    <nav>
+
+      <a href="index.html" class="nav-item">
+        🏠 <span>Live Dashboard</span>
+      </a>
+
+      <a href="train.html" class="nav-item">
+        🔍 <span>Train Search</span>
+      </a>
+
+      <a href="my-trips.html" class="nav-item">
+        🎫 <span>My Trips</span>
+      </a>
+
+      <a href="alerts.html" class="nav-item">
+        🔔 <span>Alerts</span>
+      </a>
+
+      <a href="feedback.html" class="nav-item active">
+        💬 <span>Feedback</span>
+      </a>
+
+    </nav>
+
+    <div class="auth-sidebar-links">
+      <a href="signin.html" class="auth-link">↪ <span>Sign In</span></a>
+    </div>
+
+  </aside>
+
+
+  <main class="main">
+
+    <div class="page-header">
+
+      <h1>Help Us Improve RailWatch AI</h1>
+
+      <p>
+        Your feedback helps us make ETA predictions more useful.
+      </p>
+
+    </div>
+
+
+    <div class="feedback-layout">
+
+
+      <!-- FEEDBACK FORM -->
+
+      <section class="card feedback-form">
+
+        <h2>Share Your Feedback</h2>
+
+        <label>How was your experience?</label>
+
+        <div class="rating">
+
+          <button>😞</button>
+          <button>😐</button>
+          <button>🙂</button>
+          <button>😊</button>
+          <button>🤩</button>
+
+        </div>
+
+
+        <label>What would you like to tell us?</label>
+
+        <textarea
+          id="feedbackText"
+          placeholder="Tell us about your experience..."
+        ></textarea>
+
+
+        <label>Feedback Type</label>
+
+        <select>
+
+          <option>ETA Prediction</option>
+          <option>Train Tracking</option>
+          <option>Alerts</option>
+          <option>Train Search</option>
+          <option>UI / Design</option>
+          <option>Other</option>
+
+        </select>
+
+
+        <button
+          class="primary-btn"
+          onclick="submitFeedback()"
+        >
+          Submit Feedback
+        </button>
+
+      </section>
+
+
+      <!-- SIDE INFORMATION -->
+
+      <section class="card feedback-info">
+
+        <div class="feedback-icon">
+          💡
+        </div>
+
+        <h2>What can you report?</h2>
+
+        <ul>
+
+          <li>Incorrect ETA prediction</li>
+
+          <li>Incorrect train location</li>
+
+          <li>Missing delay information</li>
+
+          <li>Alert arriving too late</li>
+
+          <li>Feature suggestions</li>
+
+          <li>UI problems</li>
+
+        </ul>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script src="app.js"></script>
+<script src="client_sync.js"></script>
+
+</body>
+</html>
