@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailWatch AI - Loco Pilot Console</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Pilot Panel Scaffolding */
+    .pilot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .pilot-grid { grid-template-columns: 1fr; }
+    }
+    .factor-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .factor-btn {
+      padding: 12px 10px;
+      border: 2px solid #dce2eb;
+      background: #f8fafc;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .factor-btn.active {
+      border-color: #1260dc;
+      background: #eaf2ff;
+      color: #1260dc;
+    }
+    .telemetry-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #eef2f6;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #334155;
+    }
+    .log-item {
+      padding: 12px;
+      border-bottom: 1px solid #edf2f7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-time { font-size: 12px; color: #64748b; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🚆</div>
+      <div>
+        <h2>RailWatch AI</h2>
+        <small>Pilot Console</small>
+      </div>
+    </div>
+
+    <nav>
+      <a href="locopilot.html" class="nav-item active">👨‍✈️ <span>Pilot Console</span></a>
+    </nav>
+
+    <div class="auth-sidebar-links">
+      <a href="signin.html" class="auth-link" onclick="signOut()">↪ <span>Log Out</span></a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- 1. TRAIN & PILOT DETAILS HEADER -->
+    <section class="card train-header" style="margin-bottom: 20px;">
+      <div class="train-logo">👨‍✈️</div>
+      <div style="flex-grow: 1;">
+        <h1>12627 – Karnataka Sampark Kranti Express</h1>
+        <p><strong>Pilot:</strong> Capt. A. Sharma (ID: #PLT-9042) | <strong>Route:</strong> NZM → SBC</p>
+      </div>
+      <div>
+        <span class="telemetry-badge">📍 GPS: Near Anantapur (ATP)</span>
+        <span class="telemetry-badge">⚡ Speed: 72 km/h</span>
+      </div>
+    </section>
+
+    <div class="pilot-grid">
+
+      <!-- LEFT COLUMN: OPERATIONAL FACTOR REPORTING & GRAPH -->
+      <div class="admin-container">
+
+        <!-- OPERATIONAL FACTORS & COMMENT ENTRY -->
+        <section class="card section">
+          <h2>Report Operational Incident</h2>
+          <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">
+            Select an operational factor to report live delays directly to the Admin and Dashboard.
+          </p>
+
+          <label style="font-size: 12px; font-weight: 600; color: #536078;">Select Factor Category</label>
+          <div class="factor-buttons">
+            <button class="factor-btn active" onclick="selectFactor(this, 'Heavy Traffic')">🚨 Heavy Traffic</button>
+            <button class="factor-btn" onclick="selectFactor(this, 'Signal Issue')">⚠️ Signal</button>
+            <button class="factor-btn" onclick="selectFactor(this, 'Weather')">🌧 Weather</button>
+            <button class="factor-btn" onclick="selectFactor(this, 'Medical Emergency')">🚑 Medical Emergency</button>
+            <button class="factor-btn" onclick="selectFactor(this, 'Others')">🔧 Others</button>
+          </div>
+
+          <div id="otherFactorContainer" class="form-group" style="display: none; margin-bottom: 15px;">
+            <label for="otherFactor">Describe the Other Factors</label>
+            <textarea id="otherFactor" class="other-factor-textarea" rows="3" placeholder="Describe the operational factor..."></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="font-size: 12px; font-weight: 600; color: #536078;">Impact Level</label>
+            <select id="pilotImpact" style="padding: 10px; border-radius: 8px; border: 1px solid #dce2eb;">
+              <option value="High Impact">High Impact (+20m or more)</option>
+              <option value="Medium Impact" selected>Medium Impact (+10m to +20m)</option>
+              <option value="Low Impact">Low Impact (<10m delay)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="font-size: 12px; font-weight: 600; color: #536078;">Location / Comments</label>
+            <textarea id="pilotComments" rows="3" placeholder="e.g. Holding signal near Dharmavaram due to line congestion..." style="padding: 10px; border-radius: 8px; border: 1px solid #dce2eb; width: 100%; box-sizing: border-box;"></textarea>
+          </div>
+
+          <button type="button" class="primary-btn" style="width: 100%;" onclick="submitPilotEvent()">
+            Broadcast Update to Admin & Dashboard
+          </button>
+        </section>
+
+        <!-- REAL-TIME DELAY TREND -->
+        <section class="card section">
+          <h2>Real-time Delay Trend (Pilot Telemetry)</h2>
+          <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 20px; text-align: center;">
+            <div style="font-size: 24px; font-weight: bold; color: #e44343;">+1h 12m Current Delay</div>
+            <p style="font-size: 12px; color: #64748b; margin-top: 5px;">
+              📈 Delay projection graph accumulating data from signal halts and track speed limits.
+            </p>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT COLUMN: SUBMITTED LOG TIMELINE -->
+      <section class="card section">
+        <h2>Submitted Event Log Timeline</h2>
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">
+          Historical log of reports dispatched during this journey.
+        </p>
+
+        <div id="pilotLogContainer">
+          <!-- Dynamically Populated Logs -->
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+</div>
+
+<script src="auth.js"></script>
+<script>requireRole('loco');</script>
+<script src="locopilot.js"></script>
+</body>
+</html>

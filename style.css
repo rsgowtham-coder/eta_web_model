@@ -143,6 +143,32 @@ a {
   color: #1260dc;
 }
 
+.settings-menu summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: #53617a;
+  font-size: 13px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.settings-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.settings-menu summary:hover {
+  background: #f1f5ff;
+  color: #1260dc;
+}
+
+.settings-menu .auth-link {
+  margin-top: 4px;
+  padding-left: 24px;
+}
+
 
 /* =========================
    MAIN
@@ -583,6 +609,26 @@ td {
   border-color: #1762dc;
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 42px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #53617a;
+  cursor: pointer;
+  padding: 5px;
+}
+
 .auth-submit {
   width: 100%;
   margin-top: 24px;
@@ -594,6 +640,34 @@ td {
   color: #1762dc;
   font-size: 12px;
   text-align: center;
+}
+
+.signin-error {
+  min-height: 18px;
+  margin-top: 10px;
+  color: #e44343;
+  font-size: 12px;
+  text-align: center;
+}
+
+.js-message {
+  margin-top: 10px;
+  color: #e44343;
+  font-size: 12px;
+}
+
+.other-factor-textarea {
+  width: 100%;
+  min-height: 78px;
+  padding: 10px;
+  border: 1px solid #dce2eb;
+  border-radius: 8px;
+  resize: vertical;
+  outline: none;
+}
+
+.other-factor-textarea:focus {
+  border-color: #1762dc;
 }
 
 

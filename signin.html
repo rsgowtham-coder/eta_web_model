@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RailWatch AI - Sign In</title>
   <link rel="stylesheet" href="style.css">
+  <script src="users.js"></script>
 </head>
 <body>
   <main class="auth-page">
@@ -18,41 +19,56 @@
       </div>
 
       <h1>Sign In</h1>
-      <p class="auth-subtitle">Use your authorized credentials to access the admin panel.</p>
+      <p class="auth-subtitle">Use your authorized credentials to access the correct console.</p>
 
-      <form id="signinForm">
+      <form id="signinForm" novalidate>
         <label for="email">Email address</label>
-        <input id="email" type="email" placeholder="you@example.com" required>
+        <input id="email" type="text" placeholder="Email or login ID" required>
 
         <label for="password">Password</label>
-        <input id="password" type="password" placeholder="Enter your password" required>
+        <div class="password-field">
+          <input id="password" type="password" placeholder="Enter your password" required>
+          <button type="button" class="password-toggle" aria-label="Show password" onclick="togglePassword('password', this)">◉</button>
+        </div>
 
         <button class="primary-btn auth-submit" type="submit">Sign In</button>
       </form>
+      <p id="signinError" class="signin-error" role="alert"></p>
 
       <a class="back-link" href="index.html">← Back to dashboard</a>
     </section>
   </main>
 
   <script>
-    const users = [
-      { email: 'sih@eta.com', password: '26028' },
-      { email: 'goldendawn@sih' , password: 'sih2026'}
-    ];
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      const showing = input.type === 'text';
+      input.type = showing ? 'password' : 'text';
+      button.textContent = showing ? '◉' : '◎';
+      button.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    }
 
     document.getElementById('signinForm').addEventListener('submit', function (event) {
       event.preventDefault();
 
       const email = document.getElementById('email').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
-      const validUser = users.find(user => user.email === email && user.password === password);
+      const errorMessage = document.getElementById('signinError');
+      const validUser = getLoginUsers().find(user => user.email.toLowerCase() === email && String(user.password) === password);
 
-      if (!validUser) {
-        alert('Incorrect email or password.');
+      if (!email || !email.includes('@') || !validUser) {
+        errorMessage.textContent = 'Invalid Email or Incorrect Password';
         return;
       }
 
-      window.location.href = 'admin.html';
+      errorMessage.textContent = '';
+      const role = email.includes('@loco.eta.in')
+        ? 'loco'
+        : email.includes('@admin.eta.in')
+          ? 'admin'
+          : validUser.role;
+      sessionStorage.setItem('railwatch_session', JSON.stringify({ email: validUser.email, role }));
+      window.location.href = role === 'loco' ? 'locopilot.html' : 'admin.html';
     });
   </script>
 </body>
