@@ -18,7 +18,7 @@
       </div>
 
       <h1>Sign In</h1>
-      <p class="auth-subtitle">Access your saved trips and journey alerts.</p>
+      <p class="auth-subtitle">Use your authorized credentials to access the admin panel.</p>
 
       <form id="signinForm">
         <label for="email">Email address</label>
@@ -35,8 +35,23 @@
   </main>
 
   <script>
+    const users = [
+      { email: 'sih@eta.com', password: '26028' },
+      { email: 'goldendawn@sih' , password: 'sih2026'}
+    ];
+
     document.getElementById('signinForm').addEventListener('submit', function (event) {
       event.preventDefault();
+
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+      const validUser = users.find(user => user.email === email && user.password === password);
+
+      if (!validUser) {
+        alert('Incorrect email or password.');
+        return;
+      }
+
       window.location.href = 'admin.html';
     });
   </script>
