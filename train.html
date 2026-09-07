@@ -54,6 +54,17 @@
     </nav>
 
     <div class="auth-sidebar-links">
+      <div class="language-setting">
+        <label for="languageSelect">🌐 <span>Language</span></label>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="kn">ಕನ್ನಡ</option>
+          <option value="ta">தமிழ்</option>
+          <option value="ml">മലയാളം</option>
+          <option value="te">తెలుగు</option>
+        </select>
+      </div>
       <details class="settings-menu">
         <summary>⚙ <span>Settings</span></summary>
         <a href="signin.html" class="auth-link">↪ <span>Sign In</span></a>
@@ -80,26 +91,14 @@
 
       <div class="search-input">
 
-        <label>Train Number / Name</label>
-
-        <input
-          id="trainInput"
-          type="text"
-          placeholder="Example: 12627 or Karnataka Express"
-          autocomplete="off"
-        >
-
-      </div>
-
-
-      <div class="search-input">
-
         <label>From</label>
 
         <input
           id="fromInput"
           type="text"
           placeholder="Departure station"
+          list="stationOptions"
+          autocomplete="off"
         >
 
       </div>
@@ -113,6 +112,8 @@
           id="toInput"
           type="text"
           placeholder="Destination station"
+          list="stationOptions"
+          autocomplete="off"
         >
 
       </div>
@@ -126,6 +127,17 @@
       </button>
 
     </div>
+
+    <datalist id="stationOptions">
+      <option value="Hazrat Nizamuddin"></option>
+      <option value="Mathura Junction"></option>
+      <option value="Guntakal Junction"></option>
+      <option value="Anantapur"></option>
+      <option value="Dharmavaram"></option>
+      <option value="KSR Bengaluru"></option>
+      <option value="Kolar"></option>
+      <option value="New Delhi"></option>
+    </datalist>
 
 
     <!-- SEARCH STATUS -->
@@ -144,6 +156,28 @@
 
       <div id="trainResults"></div>
 
+    </section>
+
+    <section class="card train-details section" id="trainDetails" hidden>
+      <h2>Train Details</h2>
+      <div class="train-details-grid">
+        <div>
+          <small>Train No</small>
+          <strong id="detailsNumber"></strong>
+        </div>
+        <div>
+          <small>Train Name</small>
+          <strong id="detailsName"></strong>
+        </div>
+        <div class="train-path">
+          <small>Path</small>
+          <strong id="detailsPath"></strong>
+        </div>
+      </div>
+      <div class="availability-block">
+        <h3>Availability</h3>
+        <div class="availability-days" id="detailsAvailability" aria-label="Weekly train availability"></div>
+      </div>
     </section>
 
   </main>

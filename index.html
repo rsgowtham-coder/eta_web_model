@@ -47,6 +47,17 @@
     </nav>
 
     <div class="auth-sidebar-links">
+      <div class="language-setting">
+        <label for="languageSelect">🌐 <span>Language</span></label>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="kn">ಕನ್ನಡ</option>
+          <option value="ta">தமிழ்</option>
+          <option value="ml">മലയാളം</option>
+          <option value="te">తెలుగు</option>
+        </select>
+      </div>
       <details class="settings-menu">
         <summary>⚙ <span>Settings</span></summary>
         <a href="signin.html" class="auth-link">↪ <span>Sign In</span></a>
@@ -72,8 +83,8 @@
       <div class="train-logo">🚆</div>
 
       <div>
-        <h1>12627 – Karnataka Sampark Kranti Express</h1>
-        <p>Hazrat Nizamuddin (NZM) → KSR Bengaluru (SBC)</p>
+        <h1 id="dashboardTrainName">12627 – Karnataka Sampark Kranti Express</h1>
+        <p id="dashboardTrainPath">Hazrat Nizamuddin (NZM) → KSR Bengaluru (SBC)</p>
       </div>
 
     </section>
@@ -85,13 +96,13 @@
 
       <div class="card stat-card">
         <span>📍 Current Location</span>
-        <h2>Anantapur (ATP)</h2>
-        <small>Platform 2</small>
+        <h2 id="dashboardLocation">Anantapur (ATP)</h2>
+        <small id="dashboardPlatform">Platform 2</small>
       </div>
 
       <div class="card stat-card">
         <span>⏱ Current Delay</span>
-        <h2 class="danger">+1h 12m</h2>
+        <h2 id="dashboardDelay" class="danger">+1h 12m</h2>
         <small>vs Schedule</small>
       </div>
 
@@ -108,7 +119,7 @@
 
       <div class="card stat-card">
         <span>📍 Distance to Destination</span>
-        <h2>812 km</h2>
+        <h2 id="dashboardDistance">812 km</h2>
         <small>10h 45m AI ETA</small>
       </div>
 
@@ -294,6 +305,71 @@
 
   </main>
 
+</div>
+
+<div class="train-picker-modal" id="trainPickerModal" role="dialog" aria-modal="true" aria-labelledby="trainPickerTitle" hidden>
+  <div class="train-picker-card">
+    <div class="language-modal-icon">🚆</div>
+    <h2 id="trainPickerTitle">Choose a train</h2>
+    <p id="trainPickerRoute"></p>
+    <div id="trainPickerResults" class="train-picker-results"></div>
+  </div>
+</div>
+
+<div class="language-modal" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageModalTitle" hidden>
+  <div class="language-modal-card">
+    <div class="language-modal-icon">🌐</div>
+    <h2 id="languageModalTitle">Choose your language</h2>
+    <p>Select a language to continue to RailWatch AI.</p>
+    <label for="languageModalSelect">Language</label>
+    <select id="languageModalSelect">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="kn">ಕನ್ನಡ</option>
+      <option value="ta">தமிழ்</option>
+      <option value="ml">മലയാളം</option>
+      <option value="te">తెలుగు</option>
+    </select>
+    <button class="primary-btn language-continue" id="languageContinue" type="button">Continue</button>
+  </div>
+</div>
+
+<div class="journey-modal" id="journeyModal" role="dialog" aria-modal="true" aria-labelledby="journeyModalTitle" hidden>
+  <div class="journey-modal-card">
+    <div class="language-modal-icon">🚆</div>
+    <h2 id="journeyModalTitle">Plan your journey</h2>
+    <p>Select your starting point and destination to continue.</p>
+    <form id="journeyForm">
+      <label for="journeyFrom">From</label>
+      <select id="journeyFrom" required>
+        <option value="">Select station</option>
+        <option>Hazrat Nizamuddin</option>
+        <option>Mathura Junction</option>
+        <option>Guntakal Junction</option>
+        <option>Anantapur</option>
+        <option>Dharmavaram</option>
+        <option>KSR Bengaluru</option>
+        <option>Kolar</option>
+        <option>New Delhi</option>
+      </select>
+
+      <label for="journeyTo">To</label>
+      <select id="journeyTo" required>
+        <option value="">Select station</option>
+        <option>Hazrat Nizamuddin</option>
+        <option>Mathura Junction</option>
+        <option>Guntakal Junction</option>
+        <option>Anantapur</option>
+        <option>Dharmavaram</option>
+        <option>KSR Bengaluru</option>
+        <option>Kolar</option>
+        <option>New Delhi</option>
+      </select>
+
+      <p class="journey-error" id="journeyError" role="alert"></p>
+      <button class="primary-btn journey-search" type="submit">Search</button>
+    </form>
+  </div>
 </div>
 
 <script src="app.js"></script>
