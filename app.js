@@ -305,6 +305,7 @@ const journeyStorageKey = "railwatch_journey";
 const translations = {
   hi: {
     "Smarter Journeys": "स्मार्ट यात्राएं",
+    "Karnataka Sampark Kranti Express": "कर्नाटक संपर्क क्रांति एक्सप्रेस",
     "Live Dashboard": "लाइव डैशबोर्ड",
     "Train Search": "ट्रेन खोज",
     "My Trips": "मेरी यात्राएं",
@@ -319,6 +320,8 @@ const translations = {
     "Current Delay": "वर्तमान देरी",
     "vs Schedule": "समय-सारणी के अनुसार",
     "Journey Progress": "यात्रा प्रगति",
+    "Train Availability": "ट्रेन उपलब्धता",
+    "Runs on": "चलती है",
     "Distance to Destination": "गंतव्य तक दूरी",
     "AI Dynamic ETA": "एआई गतिशील अनुमानित समय",
     "Scheduled ETA": "निर्धारित आगमन समय",
@@ -379,10 +382,12 @@ const translations = {
     "Select your starting point and destination to continue.": "जारी रखने के लिए अपना प्रारंभिक स्थान और गंतव्य चुनें।",
     "Select station": "स्टेशन चुनें",
     Search: "खोजें",
+    Close: "बंद करें",
     "From and To cannot be the same station.": "प्रस्थान और गंतव्य स्टेशन एक जैसे नहीं हो सकते।"
   },
   ta: {
     "Smarter Journeys": "புத்திசாலி பயணங்கள்",
+    "Karnataka Sampark Kranti Express": "கர்நாடகா சம்பர்க் கிராந்தி எக்ஸ்பிரஸ்",
     "Live Dashboard": "நேரடி டாஷ்போர்டு",
     "Train Search": "ரயில் தேடல்",
     "My Trips": "எனது பயணங்கள்",
@@ -398,6 +403,8 @@ const translations = {
     "Current Delay": "தற்போதைய தாமதம்",
     "vs Schedule": "அட்டவணையுடன் ஒப்பிடுகையில்",
     "Journey Progress": "பயண முன்னேற்றம்",
+    "Train Availability": "ரயில் கிடைக்கும் நிலை",
+    "Runs on": "இயங்கும் நாட்கள்",
     "Distance to Destination": "இலக்கிற்கான தூரம்",
     "AI Dynamic ETA": "AI மாறும் வருகை நேரம்",
     "Scheduled ETA": "திட்டமிடப்பட்ட வருகை நேரம்",
@@ -447,10 +454,12 @@ const translations = {
     "Select your starting point and destination to continue.": "தொடர உங்கள் தொடக்க இடத்தையும் இலக்கையும் தேர்ந்தெடுக்கவும்.",
     "Select station": "நிலையத்தைத் தேர்ந்தெடுக்கவும்",
     Search: "தேடுக",
+    Close: "மூடுக",
     "From and To cannot be the same station.": "தொடக்கமும் இலக்கும் ஒரே நிலையமாக இருக்கக்கூடாது."
   },
   ml: {
     "Smarter Journeys": "സ്മാർട്ട് യാത്രകൾ",
+    "Karnataka Sampark Kranti Express": "കർണാടക സമ്പർക്ക ക്രാന്തി എക്സ്പ്രസ്",
     "Live Dashboard": "ലൈവ് ഡാഷ്ബോർഡ്",
     "Train Search": "ട്രെയിൻ തിരയൽ",
     "My Trips": "എന്റെ യാത്രകൾ",
@@ -466,6 +475,8 @@ const translations = {
     "Current Delay": "നിലവിലെ വൈകൽ",
     "vs Schedule": "ഷെഡ്യൂളുമായി താരതമ്യം ചെയ്യുമ്പോൾ",
     "Journey Progress": "യാത്ര പുരോഗതി",
+    "Train Availability": "ട്രെയിൻ ലഭ്യത",
+    "Runs on": "ഓടുന്ന ദിവസങ്ങൾ",
     "Distance to Destination": "ലക്ഷ്യസ്ഥാനത്തിലേക്കുള്ള ദൂരം",
     "AI Dynamic ETA": "AI ചലനാത്മക എത്തിച്ചേരൽ സമയം",
     "Scheduled ETA": "ക്രമീകരിച്ച എത്തിച്ചേരൽ സമയം",
@@ -515,10 +526,12 @@ const translations = {
     "Select your starting point and destination to continue.": "തുടരാൻ ആരംഭ സ്ഥലവും ലക്ഷ്യസ്ഥാനവും തിരഞ്ഞെടുക്കുക.",
     "Select station": "സ്റ്റേഷൻ തിരഞ്ഞെടുക്കുക",
     Search: "തിരയുക",
+    Close: "അടയ്ക്കുക",
     "From and To cannot be the same station.": "ആരംഭവും ലക്ഷ്യസ്ഥാനവും ഒരേ സ്റ്റേഷൻ ആയിരിക്കരുത്."
   },
   te: {
     "Smarter Journeys": "స్మార్ట్ ప్రయాణాలు",
+    "Karnataka Sampark Kranti Express": "కర్ణాటక సంపర్క్ క్రాంతి ఎక్స్‌ప్రెస్",
     "Live Dashboard": "లైవ్ డాష్‌బోర్డ్",
     "Train Search": "రైలు శోధన",
     "My Trips": "నా ప్రయాణాలు",
@@ -534,6 +547,8 @@ const translations = {
     "Current Delay": "ప్రస్తుత ఆలస్యం",
     "vs Schedule": "షెడ్యూల్‌తో పోలిస్తే",
     "Journey Progress": "ప్రయాణ పురోగతి",
+    "Train Availability": "రైలు అందుబాటు",
+    "Runs on": "నడిచే రోజులు",
     "Distance to Destination": "గమ్యస్థానానికి దూరం",
     "AI Dynamic ETA": "AI డైనమిక్ చేరుకునే సమయం",
     "Scheduled ETA": "షెడ్యూల్ చేసిన చేరుకునే సమయం",
@@ -583,10 +598,12 @@ const translations = {
     "Select your starting point and destination to continue.": "కొనసాగడానికి ప్రారంభ స్థానం మరియు గమ్యస్థానాన్ని ఎంచుకోండి.",
     "Select station": "స్టేషన్‌ను ఎంచుకోండి",
     Search: "శోధించండి",
+    Close: "మూసివేయి",
     "From and To cannot be the same station.": "ప్రారంభం మరియు గమ్యస్థానం ఒకే స్టేషన్ కాకూడదు."
   },
   kn: {
     "Smarter Journeys": "ಸ್ಮಾರ್ಟ್ ಪ್ರಯಾಣಗಳು",
+    "Karnataka Sampark Kranti Express": "ಕರ್ನಾಟಕ ಸಂಪರ್ಕ ಕ್ರಾಂತಿ ಎಕ್ಸ್‌ಪ್ರೆಸ್",
     "Live Dashboard": "ಲೈವ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
     "Train Search": "ರೈಲು ಹುಡುಕಿ",
     "My Trips": "ನನ್ನ ಪ್ರಯಾಣಗಳು",
@@ -601,6 +618,8 @@ const translations = {
     "Current Delay": "ಪ್ರಸ್ತುತ ವಿಳಂಬ",
     "vs Schedule": "ವೇಳಾಪಟ್ಟಿಗೆ ಹೋಲಿಸಿದರೆ",
     "Journey Progress": "ಪ್ರಯಾಣದ ಪ್ರಗತಿ",
+    "Train Availability": "ರೈಲು ಲಭ್ಯತೆ",
+    "Runs on": "ಚಲಿಸುವ ದಿನಗಳು",
     "Distance to Destination": "ಗಮ್ಯಸ್ಥಾನಕ್ಕೆ ದೂರ",
     "AI Dynamic ETA": "AI ಚಲನಶೀಲ ಆಗಮನ ಅಂದಾಜು",
     "Scheduled ETA": "ನಿಗದಿತ ಆಗಮನ ಸಮಯ",
@@ -661,12 +680,69 @@ const translations = {
     "Select your starting point and destination to continue.": "ಮುಂದುವರಿಯಲು ಪ್ರಾರಂಭ ಸ್ಥಳ ಮತ್ತು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
     "Select station": "ನಿಲ್ದಾಣವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     Search: "ಹುಡುಕಿ",
+    Close: "ಮುಚ್ಚಿ",
     "From and To cannot be the same station.": "ಪ್ರಾರಂಭ ಮತ್ತು ಗಮ್ಯಸ್ಥಾನ ನಿಲ್ದಾಣಗಳು ಒಂದೇ ಆಗಿರಬಾರದು."
   }
 };
 
+const stationTranslations = {
+  hi: {
+    "Hazrat Nizamuddin": "हज़रत निज़ामुद्दीन",
+    "Mathura Junction": "मथुरा जंक्शन",
+    "Guntakal Junction": "गुंतकल जंक्शन",
+    Anantapur: "अनंतपुर",
+    Dharmavaram: "धर्मावरम",
+    "KSR Bengaluru": "केएसआर बेंगलुरु",
+    Kolar: "कोलार",
+    "New Delhi": "नई दिल्ली"
+  },
+  kn: {
+    "Hazrat Nizamuddin": "ಹಜರತ್ ನಿಜಾಮುದ್ದೀನ್",
+    "Mathura Junction": "ಮಥುರಾ ಜಂಕ್ಷನ್",
+    "Guntakal Junction": "ಗುಂತಕಲ್ ಜಂಕ್ಷನ್",
+    Anantapur: "ಅನಂತಪುರ",
+    Dharmavaram: "ಧರ್ಮಾವರಂ",
+    "KSR Bengaluru": "ಕೆಎಸ್‌ಆರ್ ಬೆಂಗಳೂರು",
+    Kolar: "ಕೋಲಾರ",
+    "New Delhi": "ನವದೆಹಲಿ"
+  },
+  ta: {
+    "Hazrat Nizamuddin": "ஹஸ்ரத் நிஜாமுதீன்",
+    "Mathura Junction": "மதுரா சந்திப்பு",
+    "Guntakal Junction": "குந்தக்கல் சந்திப்பு",
+    Anantapur: "அனந்தபூர்",
+    Dharmavaram: "தர்மாவரம்",
+    "KSR Bengaluru": "கேஎஸ்ஆர் பெங்களூரு",
+    Kolar: "கோலார்",
+    "New Delhi": "புது டெல்லி"
+  },
+  ml: {
+    "Hazrat Nizamuddin": "ഹസ്രത് നിസാമുദ്ദീൻ",
+    "Mathura Junction": "മഥുര ജംഗ്ഷൻ",
+    "Guntakal Junction": "ഗുണ്ടക്കൽ ജംഗ്ഷൻ",
+    Anantapur: "അനന്തപൂർ",
+    Dharmavaram: "ധർമ്മാവരം",
+    "KSR Bengaluru": "കെഎസ്ആർ ബെംഗളൂരു",
+    Kolar: "കോലാർ",
+    "New Delhi": "ന്യൂ ഡൽഹി"
+  },
+  te: {
+    "Hazrat Nizamuddin": "హజ్రత్ నిజాముద్దీన్",
+    "Mathura Junction": "మథుర జంక్షన్",
+    "Guntakal Junction": "గుంతకల్ జంక్షన్",
+    Anantapur: "అనంతపురం",
+    Dharmavaram: "ధర్మవరం",
+    "KSR Bengaluru": "కేఎస్‌ఆర్ బెంగళూరు",
+    Kolar: "కోలార్",
+    "New Delhi": "న్యూఢిల్లీ"
+  }
+};
+
 function translatePage(language) {
-  const dictionary = translations[language];
+  const dictionary = {
+    ...translations[language],
+    ...stationTranslations[language]
+  };
   if (!dictionary) return;
 
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -689,6 +765,14 @@ function translatePage(language) {
   document.querySelectorAll("[placeholder]").forEach(element => {
     if (dictionary[element.placeholder]) element.placeholder = dictionary[element.placeholder];
   });
+}
+
+function translateStation(station, language = document.documentElement.lang) {
+  return stationTranslations[language]?.[station] || station;
+}
+
+function translateTrainName(name, language = document.documentElement.lang) {
+  return translations[language]?.[name] || name;
 }
 
 function applyLanguage(language) {
@@ -740,14 +824,17 @@ function showTrainPicker(from, to) {
 
 function updateDashboardTrain(train) {
   train = getTrainWithAvailability(train);
-  const path = `${train.from} → ${train.to}`;
+  const language = document.documentElement.lang || "en";
+  const translatedFrom = translateStation(train.from, language);
+  const translatedTo = translateStation(train.to, language);
+  const path = `${translatedFrom} → ${translatedTo}`;
   const availability = document.getElementById("dashboardAvailability");
-  document.getElementById("dashboardTrainName").textContent = `${train.number} – ${train.name}`;
+  document.getElementById("dashboardTrainName").textContent = `${train.number} – ${translateTrainName(train.name, language)}`;
   document.getElementById("dashboardTrainPath").textContent = path;
-  document.getElementById("dashboardLocation").textContent = train.from;
+  document.getElementById("dashboardLocation").textContent = translatedFrom;
   document.getElementById("dashboardPlatform").textContent = "Selected route";
   document.getElementById("dashboardDelay").textContent = "On Time";
-  document.getElementById("dashboardDestination").textContent = train.to;
+  document.getElementById("dashboardDestination").textContent = translatedTo;
 
   if (availability) {
     availability.innerHTML = train.availability.map((available, index) => {
