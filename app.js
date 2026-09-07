@@ -21,7 +21,24 @@ const trains = [
   { number: "16528", name: "Kolar Delhi Express", from: "Kolar", to: "Hazrat Nizamuddin", availability: [true, true, false, true, true, false, true] }
 ];
 
-function showAppMessage(message, element) {
+const selectedTrainStorageKey = "railwatch_selected_train";
+const availabilityStorageKey = "railwatch_train_availability";
+
+function getAvailabilityOverrides() {
+  try {
+    return JSON.parse(localStorage.getItem(availabilityStorageKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function getTrainWithAvailability(train) {
+  if (!train) return train;
+  const overrides = getAvailabilityOverrides();
+  return { ...train, availability: overrides[train.number] || train.availability };
+}
+
+function showAppMessage(message, element, type = "error") {
   if (!element) return;
   let messageElement = element.querySelector('.js-message');
   if (!messageElement) {
@@ -29,8 +46,37 @@ function showAppMessage(message, element) {
     messageElement.className = 'js-message';
     element.appendChild(messageElement);
   }
+  messageElement.className = `js-message ${type}`;
   messageElement.textContent = message;
 }
+
+const alertStorageKey = "railwatch_alerts";
+const defaultAlertCount = 4;
+
+function updateAlertCounts() {
+  const storedAlerts = localStorage.getItem(alertStorageKey);
+  let alertCount = defaultAlertCount;
+
+  if (storedAlerts !== null) {
+    try {
+      const alerts = JSON.parse(storedAlerts);
+      alertCount = Array.isArray(alerts) ? alerts.length : defaultAlertCount;
+    } catch {
+      alertCount = defaultAlertCount;
+    }
+  }
+
+  document.querySelectorAll("[data-alert-count]").forEach(element => {
+    element.textContent = alertCount;
+    element.setAttribute("aria-label", `${alertCount} alerts`);
+  });
+}
+
+updateAlertCounts();
+window.addEventListener("storage", event => {
+  if (event.key === alertStorageKey) updateAlertCounts();
+});
+window.addEventListener("pageshow", updateAlertCounts);
 
 function renderTrainResults(results) {
   const container = document.getElementById("trainResults");
@@ -53,6 +99,10 @@ function renderTrainDetails(train) {
   const details = document.getElementById("trainDetails");
   if (!details || !train) return;
 
+  train = getTrainWithAvailability(train);
+
+  localStorage.setItem(selectedTrainStorageKey, JSON.stringify(train));
+
   document.getElementById("detailsNumber").textContent = train.number;
   document.getElementById("detailsName").textContent = train.name;
   document.getElementById("detailsPath").textContent = `${train.from} → ${train.to}`;
@@ -65,6 +115,9 @@ function renderTrainDetails(train) {
 
   details.hidden = false;
   details.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  const liveDashboardLink = document.getElementById("liveDashboardLink");
+  if (liveDashboardLink) liveDashboardLink.href = "index.html";
 }
 
 function searchTrain() {
@@ -73,10 +126,22 @@ function searchTrain() {
   const from = (document.getElementById("fromInput")?.value || "").trim().toLowerCase();
   const to = (document.getElementById("toInput")?.value || "").trim().toLowerCase();
 
-  const results = trains.filter(train =>
-    (!from || train.from.toLowerCase().includes(from)) &&
-    (!to || train.to.toLowerCase().includes(to))
-  );
+  const results = trains.filter(train => {
+    const trainNumber = train.number.toLowerCase();
+    const trainName = train.name.toLowerCase();
+    const trainFrom = train.from.toLowerCase();
+    const trainTo = train.to.toLowerCase();
+
+    if (from && !to) {
+      return [trainNumber, trainName, trainFrom, trainTo].some(value => value.includes(from));
+    }
+
+    if (!from && to) {
+      return [trainNumber, trainName, trainFrom, trainTo].some(value => value.includes(to));
+    }
+
+    return (!from || trainFrom.includes(from)) && (!to || trainTo.includes(to));
+  });
 
   if (status) status.textContent = `${results.length} train${results.length === 1 ? "" : "s"} found.`;
   renderTrainResults(results);
@@ -133,7 +198,7 @@ function submitFeedback() {
   });
 
   localStorage.setItem("railwatch_user_feedback", JSON.stringify(feedbackList));
-  showAppMessage('Thank you! Your feedback has been sent to the Admin team.', text.closest('.feedback-form'));
+  showAppMessage('Thank you! Your feedback has been sent to the Admin team.', text.closest('.feedback-form'), 'success');
 
   text.value = "";
 
@@ -175,8 +240,26 @@ if (shareButton) {
 
   shareButton.addEventListener("click", async () => {
 
-    const message =
-      "Train 12627 is currently delayed by 1h 12m. AI predicted ETA: 12:05 AM.";
+    const trainNameElement = document.getElementById("dashboardTrainName");
+    const trainPath = document.getElementById("dashboardTrainPath")?.textContent.trim() || "Unknown";
+    const currentLocation = document.getElementById("dashboardLocation")?.textContent.trim() || "Unknown";
+    const scheduledEta = document.getElementById("dashboardScheduledEta")?.textContent.trim() || "Unknown";
+    const aiEta = document.getElementById("dashboardAiEta")?.textContent.trim() || "Unknown";
+    const trainDetails = trainNameElement?.textContent.trim().split(" – ") || [];
+    const trainNumber = trainDetails.shift() || "Unknown";
+    const trainName = trainDetails.join(" – ") || "Unknown";
+    const arrivalStation = trainPath.split(" → ").pop() || "Unknown";
+
+    const message = [
+      "RailWatch AI Live Dashboard",
+      `Train: ${trainName}`,
+      `Train No: ${trainNumber}`,
+      `Path: ${trainPath}`,
+      `Current location: ${currentLocation}`,
+      `Arrival station: ${arrivalStation}`,
+      `Scheduled arrival: ${scheduledEta}`,
+      `AI ETA: ${aiEta}`
+    ].join("\n");
 
     if (navigator.share) {
 
@@ -210,12 +293,14 @@ const languageModalSelect = document.getElementById("languageModalSelect");
 const languageContinue = document.getElementById("languageContinue");
 const journeyModal = document.getElementById("journeyModal");
 const journeyForm = document.getElementById("journeyForm");
+const journeyClose = document.getElementById("journeyClose");
 const journeyFrom = document.getElementById("journeyFrom");
 const journeyTo = document.getElementById("journeyTo");
 const journeyError = document.getElementById("journeyError");
 const trainPickerModal = document.getElementById("trainPickerModal");
 const trainPickerRoute = document.getElementById("trainPickerRoute");
 const trainPickerResults = document.getElementById("trainPickerResults");
+const journeyStorageKey = "railwatch_journey";
 
 const translations = {
   hi: {
@@ -620,6 +705,13 @@ function applyLanguage(language) {
 function showJourneyForm() {
   if (!journeyModal) return;
 
+  const savedJourney = JSON.parse(localStorage.getItem(journeyStorageKey) || "null");
+  if (savedJourney) {
+    if (journeyFrom) journeyFrom.value = savedJourney.from || "";
+    if (journeyTo) journeyTo.value = savedJourney.to || "";
+  }
+
+  trainPickerModal && (trainPickerModal.hidden = true);
   journeyModal.hidden = false;
   journeyFrom?.focus();
 }
@@ -647,14 +739,66 @@ function showTrainPicker(from, to) {
 }
 
 function updateDashboardTrain(train) {
+  train = getTrainWithAvailability(train);
   const path = `${train.from} → ${train.to}`;
+  const availability = document.getElementById("dashboardAvailability");
   document.getElementById("dashboardTrainName").textContent = `${train.number} – ${train.name}`;
   document.getElementById("dashboardTrainPath").textContent = path;
   document.getElementById("dashboardLocation").textContent = train.from;
   document.getElementById("dashboardPlatform").textContent = "Selected route";
   document.getElementById("dashboardDelay").textContent = "On Time";
-  document.getElementById("dashboardDistance").textContent = `${train.to} route`;
+  document.getElementById("dashboardDestination").textContent = train.to;
+
+  if (availability) {
+    availability.innerHTML = train.availability.map((available, index) => {
+      const day = ["S", "M", "T", "W", "T", "F", "S"][index];
+      const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][index];
+      return `<span class="availability-day ${available ? "available" : "unavailable"}" title="${available ? "Available" : "Not available"} on ${dayName}">${day}</span>`;
+    }).join("");
+  }
 }
+
+function renderLastViewedTrip(train) {
+  const card = document.getElementById("lastViewedTrip");
+  if (!card || !train) return;
+
+  card.innerHTML = `
+    <div class="trip-header">
+      <div>
+        <span class="status gray">Last Viewed</span>
+        <h2>${train.number}</h2>
+        <p>${train.name}</p>
+      </div>
+      <span class="favorite">★</span>
+    </div>
+    <div class="trip-route">
+      <div>
+        <strong>From</strong>
+        <small>${train.from}</small>
+      </div>
+      <div class="route-line">━━━━━━━━━</div>
+      <div>
+        <strong>To</strong>
+        <small>${train.to}</small>
+      </div>
+    </div>
+    <div class="trip-status">
+      <div>
+        <small>Viewed from</small>
+        <strong>Train Search</strong>
+      </div>
+      <div>
+        <small>Availability</small>
+        <strong class="success">Available</strong>
+      </div>
+    </div>
+    <a class="secondary-btn" href="train.html">View in Train Search</a>
+  `;
+}
+
+const savedTrain = JSON.parse(localStorage.getItem(selectedTrainStorageKey) || "null");
+if (savedTrain && document.getElementById("dashboardTrainName")) updateDashboardTrain(savedTrain);
+renderLastViewedTrip(savedTrain);
 
 if (savedLanguage) {
   applyLanguage(savedLanguage);
@@ -663,6 +807,15 @@ if (savedLanguage) {
   languageModal.hidden = false;
   languageModalSelect?.focus();
 }
+
+window.addEventListener("pageshow", () => {
+  if (savedLanguage && journeyModal) showJourneyForm();
+});
+
+journeyClose?.addEventListener("click", () => {
+  if (trainPickerModal) trainPickerModal.hidden = true;
+  if (journeyModal) journeyModal.hidden = true;
+});
 
 languageSelect?.addEventListener("change", event => {
   applyLanguage(event.target.value);
@@ -685,6 +838,10 @@ journeyForm?.addEventListener("submit", event => {
   }
 
   const matchingTrains = showTrainPicker(journeyFrom.value, journeyTo.value);
+  localStorage.setItem(journeyStorageKey, JSON.stringify({
+    from: journeyFrom.value,
+    to: journeyTo.value
+  }));
   if (matchingTrains.length) journeyModal.hidden = true;
 });
 
@@ -702,6 +859,7 @@ trainPickerResults?.addEventListener("click", event => {
   const train = trains.find(item => item.number === option.dataset.pickerTrain);
   if (!train) return;
 
+  localStorage.setItem(selectedTrainStorageKey, JSON.stringify(train));
   updateDashboardTrain(train);
   trainPickerModal.hidden = true;
 });

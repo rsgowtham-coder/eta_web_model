@@ -2,6 +2,11 @@
    ADMIN PANEL NAVIGATION & STATE SYNCHRONIZATION
 ========================================================= */
 
+const requiredRole = document.body.dataset.requiredRole;
+if (requiredRole && typeof requireRole === 'function') {
+  requireRole(requiredRole);
+}
+
 // Tab Navigation
 function switchTab(event, tabId) {
   const tabs = document.querySelectorAll('.admin-tab');
@@ -11,11 +16,15 @@ function switchTab(event, tabId) {
   contents.forEach(content => content.classList.remove('active'));
 
   event.currentTarget.classList.add('active');
-  document.getElementById(tabId).classList.add('active');
+  const targetContent = document.getElementById(tabId);
+  if (targetContent) {
+    targetContent.classList.add('active');
+  }
 }
 
 function togglePassword(inputId, button) {
   const input = document.getElementById(inputId);
+  if (!input) return;
   const showing = input.type === 'text';
   input.type = showing ? 'password' : 'text';
   button.textContent = showing ? '◉' : '◎';
@@ -38,17 +47,104 @@ function showAdminMessage(message, elementId) {
    1. LIVE DATA MANAGEMENT
 ========================================================= */
 function saveLiveData() {
+  const trainNameElem = document.getElementById('trainName');
+  const locationElem = document.getElementById('currentLocation');
+  const platformElem = document.getElementById('platform');
+  const delayElem = document.getElementById('currentDelay');
+  const etaElem = document.getElementById('aiEta');
+  const confidenceElem = document.getElementById('confidence');
+
+  if (!trainNameElem || !locationElem) return;
+
   const livePayload = {
-    trainName: document.getElementById('trainName').value,
-    location: document.getElementById('currentLocation').value,
-    platform: document.getElementById('platform').value,
-    delay: document.getElementById('currentDelay').value,
-    eta: document.getElementById('aiEta').value,
-    confidence: document.getElementById('confidence').value
+    trainName: trainNameElem.value,
+    location: locationElem.value,
+    platform: platformElem ? platformElem.value : '',
+    delay: delayElem ? delayElem.value : '',
+    eta: etaElem ? etaElem.value : '',
+    confidence: confidenceElem ? confidenceElem.value : ''
   };
 
   localStorage.setItem('railwatch_live_data', JSON.stringify(livePayload));
   showAdminMessage('Live Dashboard updated successfully across user interfaces.', 'liveDataForm');
+}
+
+function loadLiveData() {
+  const stored = localStorage.getItem('railwatch_live_data');
+  if (!stored) return;
+
+  try {
+    const liveData = JSON.parse(stored);
+    const fields = {
+      trainName: liveData.trainName,
+      currentLocation: liveData.location,
+      platform: liveData.platform,
+      currentDelay: liveData.delay,
+      aiEta: liveData.eta,
+      confidence: liveData.confidence
+    };
+
+    Object.entries(fields).forEach(([id, value]) => {
+      const field = document.getElementById(id);
+      if (field && value !== undefined) field.value = value;
+    });
+  } catch {
+    // Keep defaults if parsing fails
+  }
+}
+
+const adminAvailabilityStorageKey = 'railwatch_train_availability';
+const availabilityDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+function getAvailabilityOverrides() {
+  try {
+    return JSON.parse(localStorage.getItem(adminAvailabilityStorageKey) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function renderAvailabilityEditor() {
+  const select = document.getElementById('availabilityTrain');
+  const editor = document.getElementById('availabilityEditor');
+  if (!select || !editor || typeof trains === 'undefined') return;
+
+  select.innerHTML = trains.map(train =>
+    `<option value="${train.number}">${train.number} - ${train.name}</option>`
+  ).join('');
+
+  const renderDays = () => {
+    const train = trains.find(item => item.number === select.value);
+    const overrides = getAvailabilityOverrides();
+    const availability = overrides[select.value] || train?.availability || [];
+    editor.innerHTML = availabilityDays.map((day, index) => `
+      <label class="availability-editor-day">
+        <input type="checkbox" data-availability-index="${index}" ${availability[index] ? 'checked' : ''}>
+        <span>${day}</span>
+      </label>
+    `).join('');
+  };
+
+  select.addEventListener('change', renderDays);
+  renderDays();
+}
+
+function saveAvailability() {
+  const select = document.getElementById('availabilityTrain');
+  const editor = document.getElementById('availabilityEditor');
+  if (!select || !editor) return;
+
+  const availability = Array.from(editor.querySelectorAll('[data-availability-index]'), input => input.checked);
+  const overrides = getAvailabilityOverrides();
+  overrides[select.value] = availability;
+  localStorage.setItem(adminAvailabilityStorageKey, JSON.stringify(overrides));
+
+  const selectedTrain = JSON.parse(localStorage.getItem('railwatch_selected_train') || 'null');
+  if (selectedTrain?.number === select.value) {
+    selectedTrain.availability = availability;
+    localStorage.setItem('railwatch_selected_train', JSON.stringify(selectedTrain));
+  }
+  showAdminMessage('Train availability updated successfully.', 'availabilityForm');
 }
 
 /* =========================================================
@@ -56,9 +152,11 @@ function saveLiveData() {
 ========================================================= */
 let defaultSchedule = [
   { station: "Hazrat Nizamuddin", scheduled: "08:15 AM", eta: "08:15 AM", status: "Departed" },
+  { station: "Mathura Junction", scheduled: "10:15 AM", eta: "10:30 AM", status: "Departed" },
   { station: "Guntakal Junction", scheduled: "04:10 PM", eta: "05:30 PM", status: "Departed" },
-  { station: "Anantapur", scheduled: "07:55 PM", eta: "09:10 PM", status: "Current Stop" },
-  { station: "Dharmavaram", scheduled: "09:25 PM", eta: "09:50 PM", status: "Not Reached" }
+  { station: "Anantapur", scheduled: "07:55 PM", eta: "09:10 PM", delay: "+1h 15m", status: "Current Stop" },
+  { station: "Dharmavaram", scheduled: "09:25 PM", eta: "09:50 PM", delay: "+25m", status: "Not Reached" },
+  { station: "KSR Bengaluru", scheduled: "10:30 PM", eta: "12:05 AM", delay: "+1h 35m", status: "Not Reached" }
 ];
 
 function getSchedule() {
@@ -78,17 +176,24 @@ function renderSchedule() {
       <td>${item.eta}</td>
       <td><span class="status ${item.status === 'Departed' ? 'green' : item.status === 'Current Stop' ? 'blue-bg' : 'gray'}">${item.status}</span></td>
       <td class="table-actions">
-        <button class="btn-delete" onclick="deleteScheduleRow(${index})">Remove</button>
+        <button type="button" class="btn-delete" onclick="deleteScheduleRow(${index})">Remove</button>
       </td>
     </tr>
   `).join('');
 }
 
 function addScheduleRow() {
-  const station = document.getElementById('schedStation').value.trim();
-  const scheduled = document.getElementById('schedTime').value.trim();
-  const eta = document.getElementById('schedAiTime').value.trim();
-  const status = document.getElementById('schedStatus').value;
+  const stationElem = document.getElementById('schedStation');
+  const scheduledElem = document.getElementById('schedTime');
+  const etaElem = document.getElementById('schedAiTime');
+  const statusElem = document.getElementById('schedStatus');
+
+  if (!stationElem || !scheduledElem) return;
+
+  const station = stationElem.value.trim();
+  const scheduled = scheduledElem.value.trim();
+  const eta = etaElem ? etaElem.value.trim() : '';
+  const status = statusElem ? statusElem.value : 'Not Reached';
 
   if (!station || !scheduled) {
     showAdminMessage('Please enter station details.', 'scheduleForm');
@@ -137,16 +242,22 @@ function renderAlerts() {
         </div>
         <p>${a.desc}</p>
         ${a.source ? `<span class="alert-tag">${a.source}</span>` : ''}
-        <button class="btn-delete" style="margin-top: 5px;" onclick="deleteAlert(${i})">Clear Alert</button>
+        <button type="button" class="btn-delete" style="margin-top: 5px;" onclick="deleteAlert(${i})">Clear Alert</button>
       </div>
     </div>
   `).join('');
 }
 
 function broadcastAlert() {
-  const title = document.getElementById('alertTitle').value.trim();
-  const desc = document.getElementById('alertDesc').value.trim();
-  const severity = document.getElementById('alertSeverity').value;
+  const titleElem = document.getElementById('alertTitle');
+  const descElem = document.getElementById('alertDesc');
+  const severityElem = document.getElementById('alertSeverity');
+
+  if (!titleElem || !descElem) return;
+
+  const title = titleElem.value.trim();
+  const desc = descElem.value.trim();
+  const severity = severityElem ? severityElem.value : 'low';
 
   if (!title || !desc) {
     showAdminMessage('Please enter alert title and description.', 'alertForm');
@@ -198,21 +309,11 @@ function renderFeedback() {
 /* =========================================================
    5. USER MANAGEMENT
 ========================================================= */
-const defaultUsers = [
-  { id: "#USR-8821", name: "alex.m@example.com", role: "Passenger", status: "Active" },
-  { id: "#ADM-0001", name: "admin.jane@railwatch.ai", role: "Admin", status: "Active" }
-];
-
-function getUsers() {
-  const stored = localStorage.getItem('railwatch_users');
-  return stored ? JSON.parse(stored) : defaultUsers;
-}
-
 function renderUsers() {
   const tbody = document.getElementById('userTableBody');
   if (!tbody) return;
 
-  const users = getLoginUsers();
+  const users = typeof getLoginUsers === 'function' ? getLoginUsers() : [];
   if (users.length === 0) {
     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#718096;">No login accounts available.</td></tr>';
     return;
@@ -221,10 +322,10 @@ function renderUsers() {
   tbody.innerHTML = users.map((user, index) => `
     <tr>
       <td>${user.email}</td>
-      <td><span class="status ${user.role === 'admin' ? 'blue-bg' : 'green'}">${user.role === 'admin' ? 'Admin Panel' : 'Loco Pilot Panel'}</span></td>
+      <td><span class="status ${user.role === 'admin' || user.role === 'data' ? 'blue-bg' : 'green'}">${user.role === 'admin' ? 'Admin Panel' : user.role === 'data' ? 'Data Console' : user.role === 'user' ? 'Passenger' : 'Loco Pilot Panel'}</span></td>
       <td class="table-actions">
-        <button class="btn-edit" onclick="openEditUser(${index})">Edit</button>
-        <button class="btn-delete" onclick="revokeUser(${index})">Remove</button>
+        <button type="button" class="btn-edit" onclick="openEditUser(${index})">Edit</button>
+        <button type="button" class="btn-delete" onclick="revokeUser(${index})">Remove</button>
       </td>
     </tr>
   `).join('');
@@ -233,10 +334,16 @@ function renderUsers() {
 function addUser(event) {
   event.preventDefault();
 
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const password = document.getElementById('loginPassword').value;
-  const role = document.getElementById('loginRole').value;
-  const users = getLoginUsers();
+  const emailElem = document.getElementById('loginEmail');
+  const passwordElem = document.getElementById('loginPassword');
+  const roleElem = document.getElementById('loginRole');
+
+  if (!emailElem || !passwordElem) return;
+
+  const email = emailElem.value.trim().toLowerCase();
+  const password = passwordElem.value;
+  const role = roleElem ? roleElem.value : 'user';
+  const users = typeof getLoginUsers === 'function' ? getLoginUsers() : [];
 
   if (users.some(user => user.email.toLowerCase() === email)) {
     showAdminMessage('That login ID already exists.', 'userForm');
@@ -244,7 +351,12 @@ function addUser(event) {
   }
 
   users.push({ email, password, role });
-  saveLoginUsers(users);
+  if (typeof saveLoginUsers === 'function') {
+    saveLoginUsers(users);
+  } else {
+    localStorage.setItem('railwatch_login_users', JSON.stringify(users));
+  }
+
   renderUsers();
   document.getElementById('userForm').reset();
 }
@@ -252,7 +364,7 @@ function addUser(event) {
 let editingUserIndex = -1;
 
 function openEditUser(index) {
-  const users = getLoginUsers();
+  const users = typeof getLoginUsers === 'function' ? getLoginUsers() : [];
   const user = users[index];
   if (!user) return;
 
@@ -272,7 +384,7 @@ function closeEditUser() {
 function saveEditedUser(event) {
   event.preventDefault();
 
-  const users = getLoginUsers();
+  const users = typeof getLoginUsers === 'function' ? getLoginUsers() : [];
   const user = users[editingUserIndex];
   const email = document.getElementById('editLoginEmail').value.trim().toLowerCase();
   const password = document.getElementById('editLoginPassword').value;
@@ -288,25 +400,38 @@ function saveEditedUser(event) {
   user.email = email;
   user.password = password;
   user.role = role;
-  saveLoginUsers(users);
+
+  if (typeof saveLoginUsers === 'function') {
+    saveLoginUsers(users);
+  } else {
+    localStorage.setItem('railwatch_login_users', JSON.stringify(users));
+  }
+
   renderUsers();
   closeEditUser();
 }
 
 function revokeUser(index) {
-  const users = getLoginUsers();
+  const users = typeof getLoginUsers === 'function' ? getLoginUsers() : [];
   const user = users[index];
   if (!user) return;
 
   if (!confirm(`Remove login access for ${user.email}?`)) return;
 
   users.splice(index, 1);
-  saveLoginUsers(users);
+  if (typeof saveLoginUsers === 'function') {
+    saveLoginUsers(users);
+  } else {
+    localStorage.setItem('railwatch_login_users', JSON.stringify(users));
+  }
+
   renderUsers();
 }
 
 /* Initialize Admin Logic on Page Load */
 document.addEventListener("DOMContentLoaded", () => {
+  loadLiveData();
+  renderAvailabilityEditor();
   renderSchedule();
   renderAlerts();
   renderFeedback();
@@ -314,6 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener('storage', event => {
+  if (event.key === 'railwatch_live_data') loadLiveData();
   if (event.key === 'railwatch_alerts') renderAlerts();
   if (event.key === 'railwatch_user_feedback') renderFeedback();
   if (event.key === 'railwatch_users' || event.key === 'railwatch_login_users') renderUsers();

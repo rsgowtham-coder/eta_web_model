@@ -90,6 +90,20 @@ a {
   font-weight: 650;
 }
 
+.alert-count {
+  min-width: 20px;
+  height: 20px;
+  margin-left: auto;
+  padding: 0 5px;
+  border-radius: 10px;
+  display: inline-grid;
+  place-items: center;
+  background: #e44343;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 
 /* =========================
    AI CARD
@@ -308,6 +322,11 @@ a {
   margin-top: 4px;
 }
 
+.journey-close {
+  width: 100%;
+  margin-top: 10px;
+}
+
 .journey-error {
   min-height: 18px;
   margin: 10px 0 4px !important;
@@ -407,6 +426,11 @@ a {
   padding: 22px;
 }
 
+.admin-main {
+  margin-left: 0;
+  width: 100%;
+}
+
 .topbar {
   height: 45px;
   display: flex;
@@ -499,6 +523,13 @@ a {
 .stat-card small {
   color: #748096;
   font-size: 11px;
+}
+
+.stat-card .distance-value {
+  display: block;
+  margin-bottom: 5px;
+  color: #132044;
+  font-size: 15px;
 }
 
 .progress {
@@ -732,6 +763,48 @@ td {
   color: #69758c;
 }
 
+.data-main .form-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+
+.data-main .form-group input,
+.data-main .form-group select,
+.data-main .form-group textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+.console-form {
+  margin-bottom: 20px;
+}
+
+.alert-description-group {
+  grid-column: span 2;
+}
+
+.data-main .table-container {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-main #scheduleTableBody + * {
+  min-width: 620px;
+}
+
+.data-main .table-container table {
+  min-width: 620px;
+}
+
+.console-alert-list {
+  margin-top: 10px;
+}
+
+.console-alert-list .alert-card-large {
+  min-width: 0;
+}
+
 
 /* =========================
    SEARCH
@@ -818,6 +891,17 @@ td {
   margin-bottom: 25px;
 }
 
+.auth-divider {
+  border: 0;
+  border-top: 1px solid #e5eaf2;
+  margin: 24px 0 20px;
+}
+
+.auth-section-title {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
 .auth-card label {
   display: block;
   font-size: 12px;
@@ -881,6 +965,10 @@ td {
   margin-top: 10px;
   color: #e44343;
   font-size: 12px;
+}
+
+.js-message.success {
+  color: #08a568;
 }
 
 .other-factor-textarea {
@@ -994,6 +1082,31 @@ td {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.availability-editor {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(72px, 1fr));
+  gap: 8px;
+  margin: 4px 0 18px;
+}
+
+.availability-editor-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 8px;
+  border: 1px solid #dce2eb;
+  border-radius: 8px;
+  color: #536078;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.availability-editor-day input {
+  accent-color: #1762dc;
 }
 
 .availability-day {
@@ -1267,6 +1380,10 @@ td {
     align-items: stretch;
   }
 
+  .availability-editor {
+    grid-template-columns: repeat(4, minmax(100px, 1fr));
+  }
+
 }
 
 @media(max-width: 550px) {
@@ -1277,6 +1394,67 @@ td {
 
   .main {
     padding: 12px;
+  }
+
+  .availability-editor {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .page-header {
+    padding: 16px 0;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .admin-nav {
+    gap: 6px;
+  }
+
+  .admin-tab {
+    flex: 1 0 auto;
+    padding: 8px 11px;
+  }
+
+  .data-main .section {
+    padding: 15px;
+  }
+
+  .data-main .admin-nav {
+    justify-content: flex-start;
+    padding-bottom: 8px;
+  }
+
+  .data-main .admin-tab {
+    flex: 0 0 auto;
+  }
+
+  .data-main .primary-btn {
+    width: 100%;
+  }
+
+  .alert-description-group {
+    grid-column: auto;
+  }
+
+  .console-alert-list .alert-card-large {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .console-alert-list .alert-top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .train-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .train-path {
+    grid-column: auto;
   }
 
 }

@@ -37,7 +37,7 @@
       </a>
 
       <a href="alerts.html" class="nav-item">
-        🔔 <span>Alerts</span>
+        🔔 <span>Alerts</span><span class="alert-count" data-alert-count aria-label="Number of alerts">4</span>
       </a>
 
       <a href="feedback.html" class="nav-item">
@@ -71,7 +71,6 @@
   <main class="main">
 
     <header class="topbar">
-      <div>🔔 <span class="notification">3</span></div>
       <button>↗ Share Status</button>
     </header>
 
@@ -118,8 +117,9 @@
       </div>
 
       <div class="card stat-card">
-        <span>📍 Distance to Destination</span>
-        <h2 id="dashboardDistance">812 km</h2>
+        <span>📍 Destination</span>
+        <h2 id="dashboardDestination">KSR Bengaluru</h2>
+        <strong class="distance-value" id="dashboardDistance">Distance: 812 km</strong>
         <small>10h 45m AI ETA</small>
       </div>
 
@@ -139,20 +139,14 @@
         <div class="eta-grid">
 
           <div class="eta-box">
-            <small>Scheduled ETA</small>
-            <h3>10:30 PM</h3>
+            <small>Scheduled Time</small>
+            <h3 id="dashboardScheduledEta">10:30 PM</h3>
             <p>07 Sep 2026</p>
           </div>
 
           <div class="eta-box">
-            <small>Current ETA</small>
-            <h3 class="warning">11:42 PM</h3>
-            <p>+1h 12m</p>
-          </div>
-
-          <div class="eta-box">
             <small>AI Predicted ETA</small>
-            <h3 class="success">12:05 AM</h3>
+            <h3 id="dashboardAiEta" class="success">12:05 AM</h3>
             <p>+1h 35m</p>
           </div>
 
@@ -164,44 +158,26 @@
 
         </div>
 
-        <div class="info">
-          ℹ AI prediction updates every 5 minutes using real-time data.
-        </div>
-
       </div>
 
 
-      <!-- FACTORS -->
+      <!-- TRAIN AVAILABILITY -->
 
       <div class="card section">
 
-        <h2>Factors Affecting ETA</h2>
+        <h2>Train Availability</h2>
 
-        <div class="factor">
-          🚨
-          <div>
-            <strong>Heavy Traffic Ahead</strong>
-            <small>Guntakal – Dharmavaram</small>
+        <div class="availability-block">
+          <h3>Runs on</h3>
+          <div class="availability-days" id="dashboardAvailability" aria-label="Train availability by day">
+            <span class="availability-day available" title="Available on Sunday">S</span>
+            <span class="availability-day available" title="Available on Monday">M</span>
+            <span class="availability-day unavailable" title="Not available on Tuesday">T</span>
+            <span class="availability-day available" title="Available on Wednesday">W</span>
+            <span class="availability-day available" title="Available on Thursday">T</span>
+            <span class="availability-day unavailable" title="Not available on Friday">F</span>
+            <span class="availability-day available" title="Available on Saturday">S</span>
           </div>
-          <span class="high">High Impact</span>
-        </div>
-
-        <div class="factor">
-          ⚠️
-          <div>
-            <strong>Signal Issue</strong>
-            <small>Reported near Dharmavaram</small>
-          </div>
-          <span class="medium">Medium</span>
-        </div>
-
-        <div class="factor">
-          🌧
-          <div>
-            <strong>Weather Impact</strong>
-            <small>Light rain near Kolar</small>
-          </div>
-          <span class="low">Low</span>
         </div>
 
       </div>
@@ -232,7 +208,6 @@
             <tr>
               <th>Station</th>
               <th>Scheduled</th>
-              <th>Current ETA</th>
               <th>AI ETA</th>
               <th>Delay</th>
               <th>Status</th>
@@ -245,7 +220,6 @@
               <td>🟢 Hazrat Nizamuddin</td>
               <td>08:15 AM</td>
               <td class="success">08:15 AM</td>
-              <td class="success">08:15 AM</td>
               <td>On Time</td>
               <td><span class="status green">Departed</span></td>
             </tr>
@@ -253,7 +227,6 @@
             <tr>
               <td>🟢 Mathura Junction</td>
               <td>10:15 AM</td>
-              <td class="warning">10:28 AM</td>
               <td class="warning">10:30 AM</td>
               <td>+15m</td>
               <td><span class="status green">Departed</span></td>
@@ -262,7 +235,6 @@
             <tr>
               <td>🟠 Guntakal Junction</td>
               <td>04:10 PM</td>
-              <td class="warning">05:25 PM</td>
               <td class="warning">05:30 PM</td>
               <td>+1h 20m</td>
               <td><span class="status green">Departed</span></td>
@@ -271,7 +243,6 @@
             <tr class="current">
               <td><strong>🔵 Anantapur</strong></td>
               <td>07:55 PM</td>
-              <td class="warning">09:07 PM</td>
               <td class="blue">09:10 PM</td>
               <td>+1h 15m</td>
               <td><span class="status blue-bg">Current Stop</span></td>
@@ -280,7 +251,6 @@
             <tr>
               <td>⚪ Dharmavaram</td>
               <td>09:25 PM</td>
-              <td>—</td>
               <td class="blue">09:50 PM</td>
               <td>+25m</td>
               <td><span class="status gray">Not Reached</span></td>
@@ -289,7 +259,6 @@
             <tr>
               <td>⚪ KSR Bengaluru</td>
               <td>10:30 PM</td>
-              <td>—</td>
               <td class="blue">12:05 AM</td>
               <td>+1h 35m</td>
               <td><span class="status gray">Not Reached</span></td>
@@ -369,9 +338,11 @@
       <p class="journey-error" id="journeyError" role="alert"></p>
       <button class="primary-btn journey-search" type="submit">Search</button>
     </form>
+    <button class="secondary-btn journey-close" id="journeyClose" type="button">Close</button>
   </div>
 </div>
 
+<script src="auth.js"></script>
 <script src="app.js"></script>
 <script src="client_sync.js"></script>
 

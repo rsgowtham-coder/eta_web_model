@@ -35,6 +35,23 @@
       </form>
       <p id="signinError" class="signin-error" role="alert"></p>
 
+      <hr class="auth-divider">
+
+      <h2 class="auth-section-title">Create passenger account</h2>
+      <form id="signupForm" novalidate>
+        <label for="signupEmail">Email address</label>
+        <input id="signupEmail" type="email" placeholder="you@example.com" required>
+
+        <label for="signupPassword">Password</label>
+        <input id="signupPassword" type="password" placeholder="Create a password" required>
+
+        <label for="signupConfirmPassword">Confirm password</label>
+        <input id="signupConfirmPassword" type="password" placeholder="Repeat your password" required>
+
+        <button class="secondary-btn auth-submit" type="submit">Sign Up</button>
+      </form>
+      <p id="signupMessage" class="signin-error" role="alert"></p>
+
       <a class="back-link" href="index.html">← Back to dashboard</a>
     </section>
   </main>
@@ -54,7 +71,15 @@
       const email = document.getElementById('email').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
       const errorMessage = document.getElementById('signinError');
-      const validUser = getLoginUsers().find(user => user.email.toLowerCase() === email && String(user.password) === password);
+      const users = getLoginUsers();
+      let validUser = users.find(user => user.email.toLowerCase() === email && String(user.password) === password);
+
+      const emailExists = users.some(user => user.email.toLowerCase() === email);
+      if (!validUser && !emailExists && email.endsWith('@gmail.com') && password.length >= 6) {
+        validUser = { email, password, role: 'user' };
+        users.push(validUser);
+        saveLoginUsers(users);
+      }
 
       if (!email || !email.includes('@') || !validUser) {
         errorMessage.textContent = 'Invalid Email or Incorrect Password';
@@ -62,13 +87,47 @@
       }
 
       errorMessage.textContent = '';
-      const role = email.includes('@loco.eta.in')
-        ? 'loco'
-        : email.includes('@admin.eta.in')
-          ? 'admin'
-          : validUser.role;
+      const role = ['admin', 'data', 'loco'].includes(validUser.role) ? validUser.role : 'user';
       sessionStorage.setItem('railwatch_session', JSON.stringify({ email: validUser.email, role }));
-      window.location.href = role === 'loco' ? 'locopilot.html' : 'admin.html';
+      window.location.href = role === 'user'
+        ? 'my-trips.html'
+        : role === 'loco'
+          ? 'locopilot.html'
+          : role === 'data'
+            ? 'data.html'
+            : 'admin.html';
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('signupConfirmPassword').value;
+      const message = document.getElementById('signupMessage');
+      const users = getLoginUsers();
+
+      if (!email || !email.includes('@')) {
+        message.textContent = 'Enter a valid email address.';
+        return;
+      }
+      if (password.length < 6) {
+        message.textContent = 'Password must be at least 6 characters.';
+        return;
+      }
+      if (password !== confirmPassword) {
+        message.textContent = 'Passwords do not match.';
+        return;
+      }
+      if (users.some(user => user.email.toLowerCase() === email)) {
+        message.textContent = 'An account with this email already exists.';
+        return;
+      }
+
+      users.push({ email, password, role: 'user' });
+      saveLoginUsers(users);
+      sessionStorage.setItem('railwatch_session', JSON.stringify({ email, role: 'user' }));
+      window.location.href = 'my-trips.html';
     });
   </script>
 </body>

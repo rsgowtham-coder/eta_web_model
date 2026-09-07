@@ -26,7 +26,7 @@ function selectFactor(button, factorName) {
   const otherContainer = document.getElementById('otherFactorContainer');
   const otherInput = document.getElementById('otherFactor');
   const isOther = factorName === 'Others';
-  if (otherContainer) otherContainer.style.display = isOther ? 'flex' : 'none';
+  if (otherContainer) otherContainer.style.display = isOther ? 'block' : 'none';
   if (isOther && otherInput) otherInput.focus();
   if (!isOther && otherInput) otherInput.value = '';
 }
@@ -67,9 +67,12 @@ function renderPilotLogs() {
 
 // Submit Event & Synchronize with Admin Panel and User Dashboard
 function submitPilotEvent() {
-  const comments = document.getElementById('pilotComments').value.trim();
-  const otherFactor = document.getElementById('otherFactor')?.value.trim() || '';
-  const impact = document.getElementById('pilotImpact').value;
+  const commentsElem = document.getElementById('pilotComments');
+  const comments = commentsElem ? commentsElem.value.trim() : '';
+  const otherFactorElem = document.getElementById('otherFactor');
+  const otherFactor = otherFactorElem ? otherFactorElem.value.trim() : '';
+  const impactElem = document.getElementById('pilotImpact');
+  const impact = impactElem ? impactElem.value : 'Medium Impact';
 
   if (selectedFactor === 'Others' && !otherFactor) {
     showPilotMessage('Describe the Other Factors');
@@ -86,9 +89,9 @@ function submitPilotEvent() {
 
   const newLog = {
     time: timeStr,
-    factor: selectedFactor,
+    factor: selectedFactor === 'Others' ? `Others (${otherFactor})` : selectedFactor,
     impact: impact,
-    location: selectedFactor === 'Others' ? `${otherFactor} | ${comments}` : comments
+    location: comments
   };
 
   // 1. Save locally to Pilot Log Timeline
@@ -99,8 +102,8 @@ function submitPilotEvent() {
   // 2. Automatically dispatch to System Alerts (Visible on Admin & Dashboard)
   const existingAlerts = JSON.parse(localStorage.getItem('railwatch_alerts') || '[]');
   existingAlerts.unshift({
-    title: `${selectedFactor} Reported by Loco Pilot`,
-    desc: selectedFactor === 'Others' ? `${otherFactor} | ${comments}` : comments,
+    title: `${selectedFactor === 'Others' ? otherFactor : selectedFactor} Reported by Loco Pilot`,
+    desc: comments,
     tag: impact,
     severity: impact.includes('High') ? 'danger-bg' : 'warning-bg',
     time: timeStr,
@@ -109,7 +112,8 @@ function submitPilotEvent() {
   localStorage.setItem('railwatch_alerts', JSON.stringify(existingAlerts));
 
   // Reset & Re-render
-  document.getElementById('pilotComments').value = '';
+  if (commentsElem) commentsElem.value = '';
+  if (otherFactorElem) otherFactorElem.value = '';
   renderPilotLogs();
 
   showPilotMessage('Event successfully transmitted to Admin Console and Live Dashboard.');

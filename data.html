@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailWatch AI - Data Console</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Admin Specific Scaffolding */
+    .admin-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .admin-nav {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid #e5eaf2;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      overflow-x: auto;
+    }
+    .admin-tab {
+      padding: 8px 16px;
+      border-radius: 6px;
+      background: #f1f5ff;
+      color: #1260dc;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .admin-tab.active {
+      background: #1260dc;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #536078;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px;
+      border: 1px solid #dce2eb;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    .table-actions button {
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-edit { background: #e3edff; color: #1760d5; }
+    .btn-delete { background: #ffe7e7; color: #e44343; }
+    .edit-login-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(19, 32, 68, .35);
+      z-index: 10;
+    }
+    .edit-login-modal.open { display: grid; }
+    .edit-login-dialog {
+      width: min(100%, 440px);
+      padding: 24px;
+    }
+    .edit-login-dialog h2 { margin-bottom: 18px; }
+    .edit-login-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+  </style>
+</head>
+<body data-required-role="data">
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">⚙️</div>
+      <div>
+        <h2>RailWatch AI</h2>
+        <small>Data Console</small>
+      </div>
+    </div>
+
+    <nav>
+      <a href="data.html" class="nav-item active">
+        🛠️ <span>Data Console</span>
+      </a>
+    </nav>
+
+    <div class="auth-sidebar-links">
+      <div class="language-setting">
+        <label for="languageSelect">🌐 <span>Language</span></label>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="kn">ಕನ್ನಡ</option>
+          <option value="ta">தமிழ்</option>
+          <option value="ml">മലയാളം</option>
+          <option value="te">తెలుగు</option>
+        </select>
+      </div>
+      <a href="signin.html" class="auth-link" onclick="signOut()">↪ <span>Log Out</span></a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main data-main">
+
+    <div class="page-header">
+      <h1>Data Console</h1>
+      <p>Configure real-time parameters, schedules, and alerts.</p>
+    </div>
+
+    <!-- ADMIN TABS NAVIGATION -->
+    <div class="admin-nav">
+      <button class="admin-tab active" onclick="switchTab(event, 'tab-live')">📡 Live Data Management</button>
+      <button class="admin-tab" onclick="switchTab(event, 'tab-schedule')">📅 Train Schedule</button>
+      <button class="admin-tab" onclick="switchTab(event, 'tab-alerts')">🔔 Alert Configuration</button>
+    </div>
+
+    <div class="admin-container">
+
+      <!-- 1. LIVE DATA MANAGEMENT -->
+      <section id="tab-live" class="tab-content active">
+        <div class="card section">
+          <h2>Update Real-time Train Dashboard Data</h2>
+          <form id="liveDataForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Train ID & Name</label>
+                <input type="text" id="trainName" value="12627 – Karnataka Sampark Kranti Express">
+              </div>
+              <div class="form-group">
+                <label>Current Location Station</label>
+                <input type="text" id="currentLocation" value="Anantapur (ATP)">
+              </div>
+              <div class="form-group">
+                <label>Platform Number</label>
+                <input type="text" id="platform" value="Platform 2">
+              </div>
+              <div class="form-group">
+                <label>Current Delay Override</label>
+                <input type="text" id="currentDelay" value="+1h 12m">
+              </div>
+              <div class="form-group">
+                <label>AI Predicted ETA</label>
+                <input type="text" id="aiEta" value="12:05 AM">
+              </div>
+              <div class="form-group">
+                <label>ETA Confidence Rate (%)</label>
+                <input type="number" id="confidence" value="78">
+              </div>
+            </div>
+            <button type="button" class="primary-btn" onclick="saveLiveData()">Push Updates to User Dashboard</button>
+          </form>
+        </div>
+
+        <div class="card section">
+          <h2>Train Availability</h2>
+          <form id="availabilityForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="availabilityTrain">Train</label>
+                <select id="availabilityTrain"></select>
+              </div>
+            </div>
+            <div class="availability-editor" id="availabilityEditor" aria-label="Train availability by day"></div>
+            <button type="button" class="primary-btn" onclick="saveAvailability()">Save Availability</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- 2. TRAIN SCHEDULE -->
+      <section id="tab-schedule" class="tab-content">
+        <div class="card section">
+          <h2>Station Schedule Manager</h2>
+          <form id="scheduleForm" class="console-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Station Name</label>
+                <input type="text" id="schedStation" placeholder="e.g. Dharmavaram">
+              </div>
+              <div class="form-group">
+                <label>Scheduled Arrival</label>
+                <input type="text" id="schedTime" placeholder="e.g. 09:25 PM">
+              </div>
+              <div class="form-group">
+                <label>AI Estimated ETA</label>
+                <input type="text" id="schedAiTime" placeholder="e.g. 09:50 PM">
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="schedStatus">
+                  <option value="Departed">Departed</option>
+                  <option value="Current Stop">Current Stop</option>
+                  <option value="Not Reached">Not Reached</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" class="primary-btn" onclick="addScheduleRow()">Add / Update Station</button>
+          </form>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Station</th>
+                  <th>Scheduled</th>
+                  <th>AI ETA</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTableBody">
+                <!-- Dynamically Rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. ALERT CONFIGURATION -->
+      <section id="tab-alerts" class="tab-content">
+        <div class="card section">
+          <h2>Broadcast System Alerts</h2>
+          <form id="alertForm" class="console-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Alert Title</label>
+                <input type="text" id="alertTitle" placeholder="e.g. Signal Failure Detected">
+              </div>
+              <div class="form-group">
+                <label>Impact Level</label>
+                <select id="alertSeverity">
+                  <option value="high">High Impact (Danger)</option>
+                  <option value="medium">Medium Impact (Warning)</option>
+                  <option value="low">Live Update (Info)</option>
+                </select>
+              </div>
+              <div class="form-group alert-description-group">
+                <label>Alert Description</label>
+                <input type="text" id="alertDesc" placeholder="Describe the delay or route modification event...">
+              </div>
+            </div>
+            <button type="button" class="primary-btn" onclick="broadcastAlert()">Broadcast Alert</button>
+          </form>
+
+          <h3>Active Alerts Stream</h3>
+          <div id="adminAlertContainer" class="alert-list console-alert-list">
+            <!-- Rendered Alerts -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+</div>
+
+<script src="users.js"></script>
+<script src="auth.js"></script>
+<script src="app.js"></script>
+<script src="admin_state.js"></script>
+</body>
+</html>

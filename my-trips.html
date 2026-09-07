@@ -42,7 +42,7 @@
       </a>
 
       <a href="alerts.html" class="nav-item">
-        🔔 <span>Alerts</span>
+        🔔 <span>Alerts</span><span class="alert-count" data-alert-count aria-label="Number of alerts">4</span>
       </a>
 
       <a href="feedback.html" class="nav-item">
@@ -152,70 +152,17 @@
       </div>
 
 
-      <!-- SAVED TRIP -->
+      <!-- LAST VIEWED TRAIN -->
 
-      <div class="card trip-card">
-
+      <div class="card trip-card" id="lastViewedTrip">
         <div class="trip-header">
-
           <div>
-            <span class="status gray">
-              Upcoming
-            </span>
-
-            <h2>12628</h2>
-
-            <p>Karnataka Express</p>
+            <span class="status gray">Last Viewed</span>
+            <h2>No train selected</h2>
+            <p>Search for a train to see it here.</p>
           </div>
-
-          <span class="favorite">
-            ★
-          </span>
-
         </div>
-
-
-        <div class="trip-route">
-
-          <div>
-            <strong>SBC</strong>
-            <small>KSR Bengaluru</small>
-          </div>
-
-          <div class="route-line">
-            ━━━━━━━━━
-          </div>
-
-          <div>
-            <strong>NDLS</strong>
-            <small>New Delhi</small>
-          </div>
-
-        </div>
-
-
-        <div class="trip-status">
-
-          <div>
-            <small>Departure</small>
-            <strong>
-              Tomorrow
-            </strong>
-          </div>
-
-          <div>
-            <small>Status</small>
-            <strong class="success">
-              On Time
-            </strong>
-          </div>
-
-        </div>
-
-        <button class="secondary-btn">
-          View Trip
-        </button>
-
+        <a class="secondary-btn" href="train.html">Search Trains</a>
       </div>
 
     </div>
@@ -224,6 +171,9 @@
 
 </div>
 
+<script src="users.js"></script>
+<script src="auth.js"></script>
+<script>requireRole('user');</script>
 <script src="app.js"></script>
 </body>
 </html>

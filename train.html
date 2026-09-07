@@ -44,7 +44,7 @@
       </a>
 
       <a href="alerts.html" class="nav-item">
-        🔔 <span>Alerts</span>
+        🔔 <span>Alerts</span><span class="alert-count" data-alert-count aria-label="Number of alerts">4</span>
       </a>
 
       <a href="feedback.html" class="nav-item">
@@ -91,12 +91,12 @@
 
       <div class="search-input">
 
-        <label>From</label>
+        <label>Train name, number, or From station</label>
 
         <input
           id="fromInput"
           type="text"
-          placeholder="Departure station"
+          placeholder="Train name, number, or departure station"
           list="stationOptions"
           autocomplete="off"
         >
@@ -106,7 +106,7 @@
 
       <div class="search-input">
 
-        <label>To</label>
+        <label>To station (optional)</label>
 
         <input
           id="toInput"
@@ -178,6 +178,8 @@
         <h3>Availability</h3>
         <div class="availability-days" id="detailsAvailability" aria-label="Weekly train availability"></div>
       </div>
+
+      <a class="primary-btn" id="liveDashboardLink" href="index.html">Open Live Dashboard</a>
     </section>
 
   </main>
@@ -185,6 +187,7 @@
 </div>
 
 
+<script src="auth.js"></script>
 <script src="app.js"></script>
 <script src="client_sync.js"></script>
 
